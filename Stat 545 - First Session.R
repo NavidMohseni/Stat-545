@@ -78,4 +78,27 @@ gapminder %>%
   summarize(worst_diff = min(diff, na.rm = TRUE)) %>% 
   top_n(-1, wt = worst_diff) %>% 
   arrange((worst_diff))
+
+library(fs)
+gap_tsv <- path_package("gapminder", "extdata", "gapminder.tsv")
+gapminder <- read_tsv(gap_tsv)
+gapminder <- gapminder %>% 
+  mutate(country = factor(country),
+         continent = factor(continent))
+
+#Take a look at parse_integer(), parse_double(), and parse_number().
+
+#Write your own data files with write_csv()
+
+gap_life_exp <- gapminder %>%
+  group_by(country, continent) %>% 
+  summarise(life_exp = max(lifeExp)) %>% 
+  ungroup()
+
+levels(gap_life_exp$country) %>% head()
+
+gap_life_exp <- gap_life_exp %>% 
+  mutate(country = fct_reorder(country, life_exp))
+
+#saveRDS() for R files. readRDS() for read that.
    
